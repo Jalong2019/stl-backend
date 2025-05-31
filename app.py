@@ -1,23 +1,21 @@
 from flask import Flask, request, jsonify
-import uuid
-import os
+from flask_cors import CORS
 
 app = Flask(__name__)
 
-@app.route('/generate-stl', methods=['POST'])
-def generate_stl():
-    data = request.get_json()
-    prompt = data.get('prompt', 'default prompt')
-    name = data.get('name', 'model')
-    
-    # Simula geração STL
-    filename = f"{uuid.uuid4()}.stl"
-    path = os.path.join("generated", filename)
-    os.makedirs("generated", exist_ok=True)
-    
-    with open(path, "w") as f:
-        f.write(f"solid {name}\nendsolid {name}")
-    
-    # Simule a URL real (depois será substituída por link do Google Drive)
-    fake_url = f"https://yourdomain.com/stl/{filename}"
-    return jsonify({"stl_url": fake_url, "preview_url": None})
+# ⚠️ IMPORTANTE: Substitua pelo domínio real do seu app Base44
+CORS(app, resources={r"/generate": {"origins": ["https://app--3-d-creator-a326a441.base44.app
+"]}})
+
+@app.route('/generate', methods=['POST'])
+def generate_route():
+    try:
+        data = request.json
+        prompt = data.get("prompt", "")
+        # Lógica da geração STL aqui...
+        return jsonify({
+            "stl_url": "https://exemplo.com/seu_modelo.stl",
+            "preview_url": "https://exemplo.com/imagem.png"
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
